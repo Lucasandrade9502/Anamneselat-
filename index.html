@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método LAT - Avaliação Completa</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Configurações Gerais --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- Contentor Mobile --- */
+        .mobile-container {
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            position: relative;
+            background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* --- Telas --- */
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s;
+            z-index: 1;
+        }
+
+        .screen.active {
+            opacity: 1; visibility: visible; z-index: 10;
+        }
+
+        /* --- Tipografia --- */
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 24px; /* Levemente menor para caber nos forms */
+            line-height: 1.3;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        p {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #e0e0e0;
+            margin-bottom: 16px;
+        }
+
+        .text-secondary {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 13px;
+            color: #888;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* --- Formulários --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Alinhado ao topo para forms */
+            overflow-y: auto; /* Permite scroll se o form for longo */
+            padding-bottom: 20px; /* Espaço antes dos botões */
+        }
+        
+        /* Esconder barra de rolagem mas manter funcionalidade */
+        .content-area::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #fff;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        /* Ajuste para inputs de data/hora ficarem brancos */
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        /* --- Botões --- */
+        .button-area {
+            margin-top: auto;
+            padding-top: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            background: linear-gradient(0deg, #0a0a0a 20%, transparent 100%); /* Fade no fundo dos botões */
+        }
+
+        .btn {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 16px 0;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn:active { transform: scale(0.98); background-color: #e0e0e0; }
+
+        /* Estilo especial para o botão do WhatsApp */
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+
+        <div id="page-1" class="screen active">
+            <div class="content-area" style="justify-content: center;">
+                <h1>Aqui começa o seu processo.</h1>
+                <p>Não é sobre pressa.<br>É sobre construir algo que se sustente.</p>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-2')">Começar</button>
+            </div>
+        </div>
+
+        <div id="page-2" class="screen">
+            <div class="content-area" style="justify-content: center;">
+                <h1>Para existir resultado, precisa existir clareza.</h1>
+                <p>As respostas que você dá aqui determinam como o seu treino será construído.</p>
+                <span class="text-secondary">Isso não é um formulário. É um alinhamento.</span>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-3')">Seguir</button>
+            </div>
+        </div>
+
+        <div id="page-3" class="screen">
+            <div class="content-area" style="justify-content: center;">
+                <h1>Antes de continuar, selecione uma opção.</h1>
+                <span class="text-secondary">Isso serve apenas para ajustar a avaliação física.</span>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="setGenderAndProceed('feminino')">Sou Mulher</button>
+                <button class="btn" onclick="setGenderAndProceed('masculino')">Sou Homem</button>
+            </div>
+        </div>
+
+        <div id="page-4" class="screen">
+            <div class="content-area">
+                <h1>Quem é você hoje</h1>
+                <div class="form-group"><label>Nome Completo</label><input type="text"></div>
+                <div class="form-group"><label>Idade</label><input type="number"></div>
+                <div class="form-group"><label>Altura (cm)</label><input type="number"></div>
+                <div class="form-group"><label>Peso Atual (kg)</label><input type="number"></div>
+                <div class="form-group"><label>Profissão</label><input type="text"></div>
+                <div class="form-group"><label>Cidade / Estado</label><input type="text"></div>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-5')">Avançar</button>
+            </div>
+        </div>
+
+        <div id="page-5" class="screen">
+            <div class="content-area">
+                <h1>Sua rotina dita o ritmo</h1>
+                <div class="form-group"><label>Horário que acorda</label><input type="time"></div>
+                <div class="form-group"><label>Horário de trabalho</label><input type="text" placeholder="Ex: 09:00 as 18:00"></div>
+                <div class="form-group"><label>Horário de treino</label><input type="time"></div>
+                <div class="form-group"><label>Horário que dorme</label><input type="time"></div>
+                <div class="form-group">
+                    <label>Dia comum de alimentação</label>
+                    <textarea placeholder="Descreva brevemente..."></textarea>
+                </div>
+                <div class="form-group"><label>Qtd. Refeições/dia</label><input type="number"></div>
+                <div class="form-group"><label>Treina após qual refeição?</label><input type="text"></div>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-6')">Continuar</button>
+            </div>
+        </div>
+
+        <div id="page-6" class="screen">
+            <div class="content-area">
+                <h1>Seu ponto de partida</h1>
+                <div class="form-group">
+                    <label>Treina Atualmente?</label>
+                    <select>
+                        <option>Sim</option>
+                        <option>Não</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Qual tipo de treino?</label><input type="text"></div>
+                <div class="form-group"><label>Faz Cardio?</label><input type="text" placeholder="Ex: Sim, Esteira 20min"></div>
+                <div class="form-group"><label>Frequência Semanal</label><input type="text" placeholder="Ex: 4x na semana"></div>
+                <div class="form-group"><label>Duração Média</label><input type="text" placeholder="Ex: 50 min"></div>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-7')">Próximo</button>
+            </div>
+        </div>
+
+        <div id="page-7" class="screen">
+            <div class="content-area">
+                <h1>Segurança vem primeiro</h1>
+                <div class="form-group">
+                    <label>Usa medicamento ou hormônio?</label>
+                    <select>
+                        <option>Não</option>
+                        <option>Sim</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Qual e há quanto tempo?</label>
+                    <textarea placeholder="Descreva..."></textarea>
+                </div>
+                <div class="form-group"><label>Se parou, há quanto tempo?</label><input type="text"></div>
+                <span class="text-secondary">Essas informações são fundamentais para que o processo seja seguro.</span>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-8')">Seguir</button>
+            </div>
+        </div>
+
+        <div id="page-8" class="screen">
+            <div class="content-area">
+                <h1>O que faz sentido para você</h1>
+                <div class="form-group"><label>Alergias / Intolerâncias</label><input type="text"></div>
+                <div class="form-group"><label>Alimentos Indispensáveis</label><input type="text"></div>
+                <div class="form-group"><label>Alimentos que evita</label><input type="text"></div>
+                <div class="form-group"><label>Carboidratos Favoritos</label><input type="text"></div>
+                <div class="form-group"><label>Proteínas Favoritas</label><input type="text"></div>
+                <div class="form-group"><label>Gorduras Favoritas</label><input type="text"></div>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPage('page-9')">Avançar</button>
+            </div>
+        </div>
+
+        <div id="page-9" class="screen">
+            <div class="content-area">
+                <h1>Onde você quer chegar</h1>
+                <div class="form-group"><label>Objetivo 1 a 3 meses</label><textarea></textarea></div>
+                <div class="form-group"><label>Objetivo 3 a 6 meses</label><textarea></textarea></div>
+                <div class="form-group"><label>Objetivo Longo Prazo</label><textarea></textarea></div>
+                <span class="text-secondary">O plano precisa partir da realidade.</span>
+            </div>
+            <div class="button-area">
+                <button class="btn" onclick="goToPhysicalEval()">Finalizar</button>
+            </div>
+        </div>
+
+        <div id="page-10-f" class="screen">
+            <div class="content-area" style="justify-content: center;">
+                <h1>Avaliação Física</h1>
+                <p>Envie fotos atuais, em jejum:</p>
+                <ul style="color: #e0e0e0; margin-left: 20px; margin-bottom: 20px; font-family: 'Inter';">
+                    <li>Frente</li>
+                    <li>Lado</li>
+                    <li>Costas</li>
+                </ul>
+                <p>Use <strong>biquíni ou top + shorts</strong>, em local bem iluminado.</p>
+                <span class="text-secondary">As fotos são confidenciais.</span>
+            </div>
+            <div class="button-area">
+                <a href="https://wa.me/5542998540853?text=Olá,%20finalizei%20o%20questionário%20e%20estou%20enviando%20as%20fotos." target="_blank" class="btn btn-whatsapp" onclick="goToPage('page-11')">Enviar no WhatsApp</a>
+            </div>
+        </div>
+
+        <div id="page-10-m" class="screen">
+            <div class="content-area" style="justify-content: center;">
+                <h1>Avaliação Física</h1>
+                <p>Envie fotos atuais, em jejum:</p>
+                <ul style="color: #e0e0e0; margin-left: 20px; margin-bottom: 20px; font-family: 'Inter';">
+                    <li>Frente</li>
+                    <li>Lado</li>
+                    <li>Costas</li>
+                </ul>
+                <p>Use <strong>sunga ou cueca</strong>, em local bem iluminado.</p>
+                <span class="text-secondary">As fotos são confidenciais.</span>
+            </div>
+            <div class="button-area">
+                <a href="https://wa.me/5542998540853?text=Olá,%20finalizei%20o%20questionário%20e%20estou%20enviando%20as%20fotos." target="_blank" class="btn btn-whatsapp" onclick="goToPage('page-11')">Enviar no WhatsApp</a>
+            </div>
+        </div>
+
+        <div id="page-11" class="screen">
+            <div class="content-area" style="justify-content: center;">
+                <h1>Avaliação concluída.</h1>
+                <p>Agora começa o processo.<br>Sem pressa. Sem atalhos.</p>
+            </div>
+            </div>
+
+    </div>
+
+    <script>
+        let userGender = '';
+
+        function goToPage(pageId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            
+            const targetScreen = document.getElementById(pageId);
+            if (targetScreen) targetScreen.classList.add('active');
+        }
+
+        function setGenderAndProceed(gender) {
+            userGender = gender;
+            goToPage('page-4');
+        }
+
+        function goToPhysicalEval() {
+            if (userGender === 'feminino') {
+                goToPage('page-10-f');
+            } else {
+                goToPage('page-10-m');
+            }
+        }
+    </script>
+</body>
+</html>
